@@ -28,11 +28,16 @@
   <!-- spawn right goal -->
   <node name="spawn_rpost" pkg="gazebo_ros" type="spawn_model" args="-file $(find gazebo_models)/models/robocup_3Dsim_goal/model.sdf -sdf -x 4.5 -model rpost" />
 
-  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_burger.urdf.xacro" />
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find gazebo_models)/models/turtlebot3/turtlebot3_burger.urdf.xacro" />
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model burger -param robot_description -x 0 -y 0 -z 0"/> 
+
+  <rosparam command="load" file="$(find gazebo_models)/config/joints.yaml" ns="turtlebot3_joint_state_controller" />
+  <rosparam command="load" file="$(find gazebo_models)/config/head.yaml" ns="turtlebot3_head_controller" />
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" args="turtlebot3_joint_state_controller turtlebot3_head_controller"/>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
     <param name="publish_frequency" type="double" value="50.0" />
   </node>
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find turtlebot3_gazebo)/rviz/turtlebot3_gazebo_model.rviz" output="screen"/> 
+  <!--node pkg="rviz" type="rviz" name="rviz" args="-d $(find turtlebot3_gazebo)/rviz/turtlebot3_gazebo_model.rviz" output="screen"/--> 
 </launch>
